@@ -14,16 +14,25 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 import ke.co.musira.mamamboga.Models.GroceryItem;
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
 
+    private RecyclerView newItemsRecView, popularItemsRecView, suggestedItemsRecView;
     private BottomNavigationView bottomNavigationView;
+
+    private GroceryItemAdapter newItemsAdapter, popularItemsAdapter, suggestedItemsAdapter;
+
+    private Utils utils;
 
     @Nullable
     @Override
@@ -34,16 +43,32 @@ public class MainFragment extends Fragment {
 
         initBottomNavigation();
 
-        Utils utils = new Utils();
+        utils = new Utils();
         utils.initDatabase(getActivity());
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("fake_database", Context.MODE_PRIVATE);
-        String returnedValue = sharedPreferences.getString("cheese", "");
-        Gson gson = new Gson();
-        GroceryItem cheese = gson.fromJson(returnedValue, GroceryItem.class);
-        Toast.makeText(getActivity(), cheese.getName(), Toast.LENGTH_SHORT).show();
+        initRecViews();
 
         return view;
+    }
+
+    private void initRecViews() {
+        Log.d(TAG, "initRecViews: started");
+        newItemsAdapter = new GroceryItemAdapter(getActivity());
+        popularItemsAdapter = new GroceryItemAdapter(getActivity());
+        suggestedItemsAdapter = new GroceryItemAdapter(getActivity());
+
+        newItemsRecView.setAdapter(newItemsAdapter);
+        popularItemsRecView.setAdapter(popularItemsAdapter);
+        suggestedItemsRecView.setAdapter(suggestedItemsAdapter);
+
+        newItemsRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+        popularItemsRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+        suggestedItemsRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+
+        ArrayList<GroceryItem> allItems = utils.getAllItems(getActivity());
+        if (null != allItems) {
+            newItemsAdapter.setItems(allItems);
+        }
     }
 
     private void initBottomNavigation() {
@@ -74,6 +99,8 @@ public class MainFragment extends Fragment {
     private void initViews(View view) {
         Log.d(TAG, "initViews: started");
         bottomNavigationView = (BottomNavigationView) view.findViewById(R.id.bottomNavigationView);
-
+        newItemsRecView = (RecyclerView) view.findViewById(R.id.newItemsRecView);
+        popularItemsRecView = (RecyclerView) view.findViewById(R.id.popularItems);
+        suggestedItemsRecView = (RecyclerView) view.findViewById(R.id.suggestedItems);
     }
 }

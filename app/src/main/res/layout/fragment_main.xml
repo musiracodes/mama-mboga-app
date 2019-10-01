@@ -21,7 +21,7 @@
                 android:id="@+id/detailsNewItems"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="new items"
+                android:text="New stock"
                 android:textSize="16sp"
                 android:textStyle="italic" />
             <!--new items rec view-->
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/newItemsRecView"
                 android:layout_marginTop="15dp"
-                android:text="popular items"
+                android:text="popular"
                 android:textSize="16sp"
                 android:textStyle="italic" />
 

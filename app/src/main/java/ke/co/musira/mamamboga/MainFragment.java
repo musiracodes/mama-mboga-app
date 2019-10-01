@@ -21,6 +21,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import ke.co.musira.mamamboga.Models.GroceryItem;
 
@@ -65,9 +67,63 @@ public class MainFragment extends Fragment {
         popularItemsRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
         suggestedItemsRecView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
 
-        ArrayList<GroceryItem> allItems = utils.getAllItems(getActivity());
-        if (null != allItems) {
-            newItemsAdapter.setItems(allItems);
+        ArrayList<GroceryItem> newItems = utils.getAllItems(getActivity());
+        if (null != newItems) {
+            newItemsAdapter.setItems(newItems);
+        }
+
+        Comparator<GroceryItem> newItemsComparator = new Comparator<GroceryItem>() {
+            @Override
+            public int compare(GroceryItem o1, GroceryItem o2) {
+                return o1.getId() - o2.getId();
+            }
+        };
+
+        Comparator<GroceryItem> reversedNewItemsComparator = Collections.reverseOrder(newItemsComparator);
+        Collections.sort(newItems, reversedNewItemsComparator);
+
+        if (null != newItems) {
+            newItemsAdapter.setItems(newItems);
+        }
+
+        ArrayList<GroceryItem> popularItems = utils.getAllItems(getActivity());
+
+
+        Comparator<GroceryItem> popularityComparator = new Comparator<GroceryItem>() {
+            @Override
+            public int compare(GroceryItem o1, GroceryItem o2) {
+                return compareByPopularity(o1, o2);
+            }
+        };
+
+        Comparator<GroceryItem> reversePopularityComparator = Collections.reverseOrder(popularityComparator);
+        Collections.sort(popularItems, reversePopularityComparator);
+
+        popularItemsAdapter.setItems(popularItems);
+
+        ArrayList<GroceryItem> suggestedItems = utils.getAllItems(getActivity());
+        Comparator<GroceryItem> suggestedItemsComparator = new Comparator<GroceryItem>() {
+            @Override
+            public int compare(GroceryItem o1, GroceryItem o2) {
+                return o1.getUserPoint() - o2.getUserPoint();
+            }
+        };
+
+        Comparator<GroceryItem> reveredSuggestedItemsComparator = Collections.reverseOrder(suggestedItemsComparator);
+        Collections.sort(suggestedItems, reveredSuggestedItemsComparator);
+
+        suggestedItemsAdapter.setItems(suggestedItems);
+
+    }
+
+    private int compareByPopularity (GroceryItem item1, GroceryItem item2) {
+        Log.d(TAG, "compareByPopularity: started");
+        if (item1.getPopularityPoint()>item2.getPopularityPoint()) {
+            return 1;
+        }else if (item1.getPopularityPoint()<item2.getPopularityPoint()) {
+            return -1;
+        }else {
+            return 0;
         }
     }
 

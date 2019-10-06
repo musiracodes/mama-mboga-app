@@ -47,6 +47,8 @@ public class GroceryItemActivity extends AppCompatActivity implements AddReviewD
 
     private RelativeLayout addReviewRelLayout;
 
+    private int currentRate = 0;
+
     private GroceryItem incomingItem;
     private Utils utils;
 
@@ -62,7 +64,8 @@ public class GroceryItemActivity extends AppCompatActivity implements AddReviewD
         Intent intent = getIntent();
         try {
             incomingItem = intent.getParcelableExtra("item");
-
+            this.currentRate = incomingItem.getRate();
+            changeVisibility(currentRate);
             setViewsValues();
 
         }catch (NullPointerException e) {
@@ -89,10 +92,12 @@ public class GroceryItemActivity extends AppCompatActivity implements AddReviewD
         btnAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: add item to the cart
+                utils.addItemToCart(incomingItem.getId());
             }
         });
-        //TODO: handle the star situation
+
+        handleStarsSituation();
+
         adapter = new ReviewsAdapter();
         reviewsRecView.setAdapter(adapter);
         reviewsRecView.setLayoutManager(new LinearLayoutManager(this));
@@ -116,6 +121,135 @@ public class GroceryItemActivity extends AppCompatActivity implements AddReviewD
         });
     }
 
+    private void handleStarsSituation() {
+        Log.d(TAG, "handleStarsSituation: started");
+
+        firstEmptyStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkIfRateHasChanged(1)) {
+                    updateDatabase(1);
+                    changeVisibility(1);
+
+                }
+            }
+        });
+
+        secondEmptyStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkIfRateHasChanged(2)) {
+                    updateDatabase(2);
+                    changeVisibility(2);
+
+                }
+            }
+        });
+
+        thirdEmptyStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkIfRateHasChanged(3)) {
+                    updateDatabase(3);
+                    changeVisibility(3);
+
+                }
+            }
+        });
+
+        firstFilledStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkIfRateHasChanged(1)) {
+                    updateDatabase(1);
+                    changeVisibility(1);
+
+                }
+            }
+        });
+
+        secondFilledStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkIfRateHasChanged(2)) {
+                    updateDatabase(2);
+                    changeVisibility(2);
+
+                }
+            }
+        });
+
+        thirdFilledStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkIfRateHasChanged(3)) {
+                    updateDatabase(3);
+                    changeVisibility(3);
+
+                }
+            }
+        });
+    }
+
+    private void updateDatabase(int newRate) {
+        Log.d(TAG, "updateDatabase: started");
+        utils.updateTheRate(incomingItem, newRate);
+    }
+
+    private void changeVisibility (int newRate) {
+        Log.d(TAG, "changeVisibility: started");
+        switch (newRate) {
+            case 0:
+                firstFilledStar.setVisibility(View.GONE);
+                secondFilledStar.setVisibility(View.GONE);
+                thirdFilledStar.setVisibility(View.GONE);
+                firstEmptyStar.setVisibility(View.VISIBLE);
+                secondEmptyStar.setVisibility(View.VISIBLE);
+                thirdEmptyStar.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                firstFilledStar.setVisibility(View.VISIBLE);
+                secondFilledStar.setVisibility(View.GONE);
+                thirdFilledStar.setVisibility(View.GONE);
+                firstEmptyStar.setVisibility(View.GONE);
+                secondEmptyStar.setVisibility(View.VISIBLE);
+                thirdEmptyStar.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                firstFilledStar.setVisibility(View.VISIBLE);
+                secondFilledStar.setVisibility(View.VISIBLE);
+                thirdFilledStar.setVisibility(View.GONE);
+                firstEmptyStar.setVisibility(View.GONE);
+                secondEmptyStar.setVisibility(View.GONE);
+                thirdEmptyStar.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                firstFilledStar.setVisibility(View.VISIBLE);
+                secondFilledStar.setVisibility(View.VISIBLE);
+                thirdFilledStar.setVisibility(View.VISIBLE);
+                firstEmptyStar.setVisibility(View.GONE);
+                secondEmptyStar.setVisibility(View.GONE);
+                thirdEmptyStar.setVisibility(View.GONE);
+                break;
+            default:
+                firstFilledStar.setVisibility(View.GONE);
+                secondFilledStar.setVisibility(View.GONE);
+                thirdFilledStar.setVisibility(View.GONE);
+                firstEmptyStar.setVisibility(View.VISIBLE);
+                secondEmptyStar.setVisibility(View.VISIBLE);
+                thirdEmptyStar.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private boolean checkIfRateHasChanged (int newRate) {
+        Log.d(TAG, "checkIfRateHasChanged: started");
+        if (newRate == currentRate) {
+            return false;
+        }else {
+            return true;
+        }
+    }
 
         private void initViews () {
         Log.d(TAG, "initViews: started");

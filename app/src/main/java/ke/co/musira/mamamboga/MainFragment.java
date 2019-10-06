@@ -148,6 +148,9 @@ public class MainFragment extends Fragment {
                 switch (menuItem.getItemId()) {
                     case R.id.search:
                         //TODO: fix this
+                        Intent intent = new Intent(getActivity(), SearchActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         break;
                     case R.id.homeActivity:
 

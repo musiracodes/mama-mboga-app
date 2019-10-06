@@ -184,4 +184,120 @@ public class Utils {
         editor.putString("allItems", finalString);
         editor.commit();
     }
+
+    public ArrayList<GroceryItem> searchForItem(String text) {
+        Log.d(TAG, "searchForItem: started");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<GroceryItem>>() {
+        }.getType();
+        ArrayList<GroceryItem> allItems = gson.fromJson(sharedPreferences.getString("allItems", null), type);
+
+        ArrayList<GroceryItem> searchItems = new ArrayList<>();
+        if (null != allItems) {
+            for (GroceryItem item : allItems) {
+                if (item.getName().equalsIgnoreCase(text)) {
+                    searchItems.add(item);
+                }
+
+                String[] splittedString = item.getName().split(" ");
+                for (int i = 0; i < splittedString.length; i++) {
+                    if (splittedString[i].equalsIgnoreCase(text)) {
+
+                        boolean doesExist = false;
+                        for (GroceryItem searchItem : searchItems) {
+                            if (searchItem.equals(item)) {
+                                doesExist = true;
+                            }
+                        }
+
+                        if (!doesExist) {
+                            searchItems.add(item);
+                        }
+                    }
+                }
+            }
+        }
+
+        return searchItems;
+    }
+
+    public ArrayList<String> getThreeCategories() {
+        Log.d(TAG, "getThreeCategories: started");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<GroceryItem>>() {
+        }.getType();
+        ArrayList<GroceryItem> allItems = gson.fromJson(sharedPreferences.getString("allItems", null), type);
+        ArrayList<String> categories = new ArrayList<>();
+
+        if (null != allItems) {
+            for (int i = 0; i < allItems.size(); i++) {
+                if (categories.size() < 3) {
+                    boolean doesExist = false;
+                    for (String s : categories) {
+                        if (allItems.get(i).getCategory().equals(s)) {
+                            doesExist = true;
+                        }
+                    }
+
+                    if (!doesExist) {
+                        categories.add(allItems.get(i).getCategory());
+                    }
+                }
+            }
+        }
+
+        return categories;
+    }
+
+    public ArrayList<String> getAllCategories() {
+        Log.d(TAG, "getAllCategories: started");
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<GroceryItem>>() {
+        }.getType();
+        ArrayList<GroceryItem> allItems = gson.fromJson(sharedPreferences.getString("allItems", null), type);
+        ArrayList<String> categories = new ArrayList<>();
+
+        if (null != allItems) {
+            for (int i = 0; i < allItems.size(); i++) {
+
+                boolean doesExist = false;
+                for (String s : categories) {
+                    if (allItems.get(i).getCategory().equals(s)) {
+                        doesExist = true;
+                    }
+                }
+
+                if (!doesExist) {
+                    categories.add(allItems.get(i).getCategory());
+                }
+
+            }
+        }
+
+        return categories;
+    }
+
+    public ArrayList<GroceryItem> getItemsByCategory (String category) {
+        Log.d(TAG, "getItemsByCategory: started");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<GroceryItem>>() {
+        }.getType();
+        ArrayList<GroceryItem> allItems = gson.fromJson(sharedPreferences.getString("allItems", null), type);
+
+        ArrayList<GroceryItem> newItems = new ArrayList<>();
+        if (null != allItems) {
+            for (GroceryItem item: allItems) {
+                if (item.getCategory().equals(category)) {
+                    newItems.add(item);
+                }
+            }
+        }
+        return newItems;
+    }
+
 }

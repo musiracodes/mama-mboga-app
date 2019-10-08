@@ -22,10 +22,17 @@ public class Utils {
 
     private static int ID = 0;
 
+    private static int ORDER_ID = 0;
+
     private Context context;
 
     public Utils(Context context) {
         this.context = context;
+    }
+
+    public static int getOrderId () {
+        ORDER_ID++;
+        return ORDER_ID;
     }
 
     public static int getId() {
@@ -333,19 +340,19 @@ public class Utils {
         return resultItems;
     }
 
-    public ArrayList<GroceryItem> deleteCartItem (GroceryItem item) {
+    public ArrayList<Integer> deleteCartItem (GroceryItem item) {
         Log.d(TAG, "deleteCartItem: started");
         SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         Type type = new TypeToken<ArrayList<Integer>>() {
         }.getType();
-        ArrayList<GroceryItem> cartItems = gson.fromJson(sharedPreferences.getString("cartItems", null), type);
+        ArrayList<Integer> cartItems = gson.fromJson(sharedPreferences.getString("cartItems", null), type);
 
-        ArrayList<GroceryItem> newItems = new ArrayList<>();
+        ArrayList<Integer> newItems = new ArrayList<>();
 
         if (null != cartItems) {
-            for (GroceryItem i: cartItems) {
-                if (!i.equals(item)) {
+            for (int i: cartItems) {
+                if (item.getId() != i) {
                     newItems.add(i);
                 }
             }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import ke.co.musira.mamamboga.Models.GroceryItem;
+import ke.co.musira.mamamboga.Models.Order;
 
 
 public class CartFirstFragment extends Fragment implements CartRecViewAdapter.GetTotalPrice,
@@ -25,30 +26,36 @@ public class CartFirstFragment extends Fragment implements CartRecViewAdapter.Ge
     @Override
     public void onDeletingResult(GroceryItem item) {
         Log.d(TAG, "onDeletingResult: attempting to delete " + item.toString());
-
-        ArrayList<GroceryItem> newItems = utils.deleteCartItem(item);
-
-            if (newItems.size()==0) {
+        ArrayList<Integer> itemIds = new ArrayList<>();
+        itemIds.add(item.getId());
+        ArrayList<GroceryItem> items = utils.getItemsById(itemIds);
+        if (items.size()>0) {
+            ArrayList<Integer> newItemsIds = utils.deleteCartItem(items.get(0));
+            if (newItemsIds.size() == 0) {
                 btnNext.setVisibility(View.GONE);
                 btnNext.setEnabled(false);
                 recyclerView.setVisibility(View.GONE);
                 txtNoItem.setVisibility(View.VISIBLE);
 
-            }else {
+            } else {
                 btnNext.setVisibility(View.VISIBLE);
                 btnNext.setEnabled(true);
                 recyclerView.setVisibility(View.VISIBLE);
                 txtNoItem.setVisibility(View.GONE);
             }
 
+            ArrayList<GroceryItem> newItems = utils.getItemsById(newItemsIds);
+            this.items = newItemsIds;
             adapter.setItems(newItems);
-
+        }
     }
 
     @Override
     public void onGettingTotalPriceResult(double price) {
         Log.d(TAG, "onGettingTotalPriceResult: totalPrice: " + price);
         txtPrice.setText(String.valueOf(price));
+        this.totalPrice = price;
+
     }
 
     private TextView txtPrice, txtNoItem;
@@ -56,6 +63,9 @@ public class CartFirstFragment extends Fragment implements CartRecViewAdapter.Ge
     private Button btnNext;
 
     private CartRecViewAdapter adapter;
+
+    private double totalPrice = 0;
+    private ArrayList<Integer> items;
 
     private Utils utils;
 
@@ -66,6 +76,7 @@ public class CartFirstFragment extends Fragment implements CartRecViewAdapter.Ge
         View view = inflater.inflate(R.layout.fragment_first_cart, container, false);
 
         initViews(view);
+        items = new ArrayList<Integer>();
 
         utils = new Utils(getActivity());
 
@@ -74,7 +85,16 @@ public class CartFirstFragment extends Fragment implements CartRecViewAdapter.Ge
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Navigate to next fragment
+                Order order = new Order();
+                order.setTotalPrice(totalPrice);
+                order.setItems(items);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("order", order);
+                CartSecondFragment cartSecondFragment = new CartSecondFragment();
+                cartSecondFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+
+                        .replace(R.id.fragment_container, cartSecondFragment).commit();
             }
         });
 
@@ -93,19 +113,21 @@ public class CartFirstFragment extends Fragment implements CartRecViewAdapter.Ge
         if (null != itemsIds) {
 
             ArrayList<GroceryItem> items = utils.getItemsById(itemsIds);
+
             if (items.size()==0) {
                 btnNext.setVisibility(View.GONE);
                 btnNext.setEnabled(false);
                 recyclerView.setVisibility(View.GONE);
                 txtNoItem.setVisibility(View.VISIBLE);
 
-
         }else {
-            btnNext.setVisibility(View.GONE);
-            btnNext.setEnabled(false);
-            recyclerView.setVisibility(View.GONE);
-            txtNoItem.setVisibility(View.VISIBLE);
-        }
+            btnNext.setVisibility(View.VISIBLE);
+            btnNext.setEnabled(true);
+            recyclerView.setVisibility(View.VISIBLE);
+            txtNoItem.setVisibility(View.GONE);
+            }
+
+            this.items = itemsIds;
             adapter.setItems(items);
         }
     }

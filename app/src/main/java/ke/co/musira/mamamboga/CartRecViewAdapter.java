@@ -62,7 +62,7 @@ public class CartRecViewAdapter extends RecyclerView.Adapter<CartRecViewAdapter.
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getActivity())
                         .setTitle("Delete Item")
-                        .setMessage("Do you want to delete " + items.get(position).getName() + "?")
+                        .setMessage("Are you sure you want to delete " + items.get(position).getName() + "?")
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

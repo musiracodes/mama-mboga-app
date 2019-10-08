@@ -50,7 +50,6 @@ public class Utils {
         editor.commit();
     }
 
-
     public void updateTheRate(GroceryItem item, int newRate) {
         Log.d(TAG, "updateTheRate: started for item: " + item.getName());
         SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
@@ -297,6 +296,65 @@ public class Utils {
                 }
             }
         }
+        return newItems;
+    }
+
+    public ArrayList<Integer> getCartItems () {
+        Log.d(TAG, "getCartItems: started");
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Integer>>() {
+        }.getType();
+        ArrayList<Integer> cartItems = gson.fromJson(sharedPreferences.getString("cartItems", null), type);
+        return cartItems;
+    }
+
+    public ArrayList<GroceryItem> getItemsById (ArrayList<Integer> ids) {
+        Log.d(TAG, "getItemsById: started");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<GroceryItem>>() {
+        }.getType();
+        ArrayList<GroceryItem> allItems = gson.fromJson(sharedPreferences.getString("allItems", null), type);
+
+        ArrayList<GroceryItem> resultItems = new ArrayList<>();
+
+        for (int id: ids) {
+            if (null != allItems) {
+                for (GroceryItem item: allItems) {
+                    if (item.getId() == id) {
+                        resultItems.add(item);
+                    }
+                }
+            }
+        }
+
+        return resultItems;
+    }
+
+    public ArrayList<GroceryItem> deleteCartItem (GroceryItem item) {
+        Log.d(TAG, "deleteCartItem: started");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(DATABASE_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Integer>>() {
+        }.getType();
+        ArrayList<GroceryItem> cartItems = gson.fromJson(sharedPreferences.getString("cartItems", null), type);
+
+        ArrayList<GroceryItem> newItems = new ArrayList<>();
+
+        if (null != cartItems) {
+            for (GroceryItem i: cartItems) {
+                if (!i.equals(item)) {
+                    newItems.add(i);
+                }
+            }
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("cartItems", gson.toJson(newItems));
+            editor.commit();
+        }
+
         return newItems;
     }
 

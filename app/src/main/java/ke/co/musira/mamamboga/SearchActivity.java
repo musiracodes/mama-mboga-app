@@ -183,8 +183,9 @@ public class SearchActivity extends AppCompatActivity implements ShowAllCategori
                         startActivity(intent);
                         break;
                     case R.id.cart:
-                        Toast.makeText(SearchActivity.this, "Cart selected", Toast.LENGTH_SHORT).show();
-                        break;
+                        Intent cartIntent = new Intent(SearchActivity.this, CartActivity.class);
+                        cartIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(cartIntent);                        break;
                     default:
                         break;
                 }

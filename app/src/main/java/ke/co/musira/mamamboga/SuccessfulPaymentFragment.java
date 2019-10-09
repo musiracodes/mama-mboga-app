@@ -11,6 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
+import ke.co.musira.mamamboga.Models.GroceryItem;
+import ke.co.musira.mamamboga.Models.Order;
+
 public class SuccessfulPaymentFragment extends Fragment {
     private static final String TAG = "SuccessfulPalymentFragm";
 
@@ -24,7 +29,16 @@ public class SuccessfulPaymentFragment extends Fragment {
         Utils utils = new Utils(getActivity());
         utils.removeCartItems();
 
-        btnGoBack = (Button) view.findViewById(R.id.btnGoBack);
+        Bundle bundle = getArguments();
+        try {
+            Order order = bundle.getParcelable("order");
+            ArrayList<Integer> itemIds = order.getItems();
+            utils.addPopularityPoint(itemIds);
+        }catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+            btnGoBack = (Button) view.findViewById(R.id.btnGoBack);
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override

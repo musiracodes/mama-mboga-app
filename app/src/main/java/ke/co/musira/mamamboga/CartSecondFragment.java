@@ -46,6 +46,7 @@ public class CartSecondFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.out, R.anim.in)
                         .replace(R.id.fragment_container, new CartFirstFragment()).commit();
             }
         });
@@ -84,8 +85,8 @@ public class CartSecondFragment extends Fragment {
         ThirdCartFragment thirdCartFragment = new ThirdCartFragment();
         thirdCartFragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.in, R.anim.out)
                 .replace(R.id.fragment_container, thirdCartFragment).commit();
-
     }
 
     private boolean validateData () {

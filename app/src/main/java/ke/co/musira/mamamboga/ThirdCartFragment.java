@@ -81,6 +81,7 @@ public class ThirdCartFragment extends Fragment {
         cartSecondFragment.setArguments(bundle);
 
         getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.out, R.anim.in)
                 .replace(R.id.fragment_container, cartSecondFragment).commit();
     }
 
@@ -123,6 +124,7 @@ public class ThirdCartFragment extends Fragment {
             successfulPaymentFragment.setArguments(bundle);
 
             getActivity().getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.in, R.anim.out)
                     .replace(R.id.fragment_container, successfulPaymentFragment).commit();
         }else {
             FailedPaymentFragment failedPaymentFragment = new FailedPaymentFragment();
@@ -131,6 +133,7 @@ public class ThirdCartFragment extends Fragment {
             failedPaymentFragment.setArguments(bundle);
 
             getActivity().getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.in, R.anim.out)
                     .replace(R.id.fragment_container, failedPaymentFragment).commit();
         }
     }

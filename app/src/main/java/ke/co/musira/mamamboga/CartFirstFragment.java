@@ -93,7 +93,7 @@ public class CartFirstFragment extends Fragment implements CartRecViewAdapter.Ge
                 CartSecondFragment cartSecondFragment = new CartSecondFragment();
                 cartSecondFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction()
-
+                        .setCustomAnimations(R.anim.in, R.anim.out)
                         .replace(R.id.fragment_container, cartSecondFragment).commit();
             }
         });

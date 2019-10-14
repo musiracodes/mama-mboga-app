@@ -34,6 +34,14 @@ public class SuccessfulPaymentFragment extends Fragment {
             Order order = bundle.getParcelable("order");
             ArrayList<Integer> itemIds = order.getItems();
             utils.addPopularityPoint(itemIds);
+            ArrayList<GroceryItem> items = utils.getItemsById(itemIds);
+            for (GroceryItem item: items) {
+                ArrayList<GroceryItem> sameCategory = new ArrayList<>();
+                sameCategory = utils.getItemsByCategory(item.getCategory());
+                for (GroceryItem j: sameCategory) {
+                    utils.increaseUserPoint(j, 4);
+                }
+            }
         }catch (NullPointerException e) {
             e.printStackTrace();
         }
